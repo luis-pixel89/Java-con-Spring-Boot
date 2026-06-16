@@ -1,0 +1,68 @@
+# ==========================
+# JAVA
+# ==========================
+*.class
+*.log
+*.ctxt
+
+# ==========================
+# MAVEN
+# ==========================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# ==========================
+# GRADLE (por si acaso)
+# ==========================
+.gradle/
+build/
+
+# ==========================
+# ECLIPSE / STS
+# ==========================
+.project
+.classpath
+.settings/
+.springBeans
+.sts4-cache/
+
+# ==========================
+# INTELLIJ IDEA
+# ==========================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ==========================
+# VS CODE
+# ==========================
+.vscode/
+
+# ==========================
+# SISTEMA OPERATIVO
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# SPRING BOOT
+# ==========================
+application-local.properties
+application-dev.properties
+
+# ==========================
+# LOGS
+# ==========================
+logs/
+*.log
+
+# ==========================
+# ARCHIVOS TEMPORALES
+# ==========================
+*.tmp
+*.swp
