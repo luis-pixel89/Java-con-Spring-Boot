@@ -1,0 +1,30 @@
+SUBIR UN PROYECTO AL REPOSITORIO	git init
+					git add .
+					git commit -m "Nombre Proyecto"
+					git branch -M main
+					git remote add origin https://github.com/luis-pixel89/web-equipo.git
+					git push -u origin main
+
+CAMBIO y CREO RAMA		git checkout -b dev
+CAMBIO DE RAMA			git checkout dev
+VER RAMA			git branch
+PUSH NUEVA RAMA			git push origin dev
+CAMBIARSE DE RAMA CREADA	git fetch origin dev:dev
+COMANDO DE RESTREO DE CAMBIOS	git fetch origin
+SUBIR UN TAG			git tag -a v1.0 -m "Version 1.0 del Panel de Integrantes de KRAKEDEV"
+				git push origin V1.0
+MERGE				git merge release/v1.0
+BORRAR RAMA TEMPORAL		
+
+MENSAJES DE COMMIT		feat: nueva funcionalidad
+				fix: corrección de error
+				style: cambios de diseño
+				docs: actualización de documentación
+
+RAMAS		GREEN	Master/Main
+		PURPLE	Develop
+		ORANGE	Hotfix
+		CYAN	Realese			git checkout -b release/v1.0	(control de calidad)
+		LIGHT	Feature			git checkout -b feature/tarjeta-estudiante-b
+
+hotflix		Solución de errores
