@@ -4,6 +4,9 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.krakedev.taller_jwt.JwtUtil;
 import com.krakedev.taller_jwt.entidades.Usuario;
 import com.krakedev.taller_jwt.repositories.UsuarioRepository;
+import com.krakedev.taller_jwt.services.TokenBlackListService;
 import com.krakedev.taller_jwt.services.UsuarioService;
 
 @RestController
@@ -22,13 +25,16 @@ import com.krakedev.taller_jwt.services.UsuarioService;
 public class AuthController {
 
 	private final UsuarioService usuarioService;
-
 	private final UsuarioRepository usuarioRepository;
+	private final TokenBlackListService blackListService;
 
-	public AuthController(UsuarioService usuarioService, UsuarioRepository usuarioRepository) {
+	public AuthController(UsuarioService usuarioService, UsuarioRepository usuarioRepository,
+			TokenBlackListService blackListService) {
 		super();
 		this.usuarioService = usuarioService;
 		this.usuarioRepository = usuarioRepository;
+		this.blackListService = blackListService;
+
 	}
 
 	@PostMapping("/registrar")
@@ -61,27 +67,69 @@ public class AuthController {
 		}
 	}
 
+	/*
+	 * SIN SPRING SECURITY
+	 * 
+	 * @GetMapping("/perfil") public ResponseEntity<?>
+	 * verPerfil(@RequestHeader(value = "Authorization", required = false) String
+	 * authHeader) { if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	 * return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	 * .body("Acceso Denegado: Debes proveer un token Bearer valido en la cabecera Authorization"
+	 * ); }
+	 * 
+	 * String token = authHeader.substring(7);
+	 * 
+	 * // INVALIDAR TOKEN if (blackListService.estaInvalidado(token)) { return
+	 * ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	 * .body("Token invalidado. Debe iniciar sesión nuevamente."); }
+	 * 
+	 * DecodedJWT datosToken = JwtUtil.validarToken(token);
+	 * 
+	 * if (datosToken == null) { return
+	 * ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+	 * body("Acceso Denegado: Token invalido o Expirado"); }
+	 * 
+	 * String usuario = datosToken.getSubject();
+	 * 
+	 * String rol = datosToken.getClaim("rol").asString();
+	 * 
+	 * return ResponseEntity.ok(Map.of("Mensaje",
+	 * "Bienvenido al sistema protegido por JWT", "Usuario", usuario, "Rol", rol,
+	 * "Estatus", "Autenticado Exitosamente")); }
+	 */
+
+	// CON SPRING SECURITY
 	@GetMapping("/perfil")
-	public ResponseEntity<?> verPerfil(@RequestHeader(value = "Authorization", required = false) String authHeader) {
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					.body("Acceso Denegado: Debes proveer un token Bearer valido en la cabecera Authorization");
+	public ResponseEntity<?> verPerfil() {
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		String usuario = auth.getName();
+		String rol = auth.getAuthorities().iterator().next().getAuthority();
+
+		return ResponseEntity.ok(Map.of("Mensaje", "Bienvenido al sistema protegido por Spring Security", "Usuario",
+				usuario, "rol_detectado", rol, "status", "Autenticado Exitosamente"));
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			String token = authHeader.substring(7);
+
+			blackListService.invalidarToken(token);
+
+			return ResponseEntity.ok(Map.of("Mensaje", "Sesion Cerrada Exitosamente. Token Invalidado"));
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token no proporcionado");
 		}
-
-		String token = authHeader.substring(7);
-
-		DecodedJWT datosToken = JwtUtil.validarToken(token);
-
-		if (datosToken == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso Denegado: Token invalido o Expirado");
-		}
-
-		String usuario = datosToken.getSubject();
-
-		String rol = datosToken.getClaim("rol").asString();
-
-		return ResponseEntity.ok(Map.of("Mensaje", "Bienvenido al sistema protegido por JWT", "Usuario", usuario, "Rol",
-				rol, "Estatus", "Autenticado Exitosamente"));
+	}
+	
+	@GetMapping("/dashboard")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> adminDashboard(){
+		String usuario=SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		return ResponseEntity.ok(Map.of("Mensaje", "Bienvenido al panel secreto de administradores", "admin", usuario));
 	}
 
 }
