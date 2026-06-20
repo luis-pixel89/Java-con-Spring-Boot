@@ -17,17 +17,18 @@ public class InsertarVehiculo {
 		try {
 			con = Conexion.getConnection();
 
-			String sql = "insert into vehiculos (placa, marca, modelo, anio, precio, color, disponible) values (?, ?, ?, ?,?,?,?)";
+			String sql = "insert into vehiculos (placa, marca, modelo, anio, precio, color, disponible, kilometraje) values (?, ?, ?, ?,?,?,?,?)";
 
 			ps = con.prepareStatement(sql);
 
-			ps.setString(1, "PQD-997");
+			ps.setString(1, "ABC-123");
 			ps.setString(2, "Kia");
 			ps.setString(3, "Picanto");
 			ps.setInt(4, 2006);
 			ps.setDouble(5, 5000.00);
 			ps.setString(6, "Rojo");
 			ps.setBoolean(7, true);
+			ps.setInt(8, 120000);
 
 			int filas = ps.executeUpdate();
 

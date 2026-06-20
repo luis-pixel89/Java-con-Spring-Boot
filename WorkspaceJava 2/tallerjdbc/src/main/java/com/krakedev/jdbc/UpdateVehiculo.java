@@ -17,7 +17,7 @@ public class UpdateVehiculo {
 
 		try {
 			con = Conexion.getConnection();
-			String sql = "UPDATE vehiculos SET marca=?, modelo=?, anio=?, precio=?, color=?, disponible=? WHERE placa=?";
+			String sql = "UPDATE vehiculos SET marca=?, modelo=?, anio=?, precio=?, color=?, disponible=?, kilometraje=? WHERE placa=?";
 			
 			ps=con.prepareStatement(sql);
 
@@ -27,7 +27,8 @@ public class UpdateVehiculo {
 			ps.setDouble(4, 20000.00);
 			ps.setString(5, "Rojo");
 			ps.setBoolean(6, true);
-			ps.setString(7, "PQD-997");
+			ps.setInt(7, 50000);
+			ps.setString(8, "PQD-997");
 
 			int filas = ps.executeUpdate();
 
