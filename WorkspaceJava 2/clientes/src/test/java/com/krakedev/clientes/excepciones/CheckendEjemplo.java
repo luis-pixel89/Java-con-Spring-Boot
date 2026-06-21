@@ -10,7 +10,7 @@ public class CheckendEjemplo {
 		System.out.println("Inicio del programa...");
 		
 		try {
-			FileReader archivo = new FileReader("archivo.txt");
+			FileReader archivo = new FileReader("contacto.txt");
 			System.out.println("Archivo abierto correctamente.");
 
 		} catch (FileNotFoundException e) {

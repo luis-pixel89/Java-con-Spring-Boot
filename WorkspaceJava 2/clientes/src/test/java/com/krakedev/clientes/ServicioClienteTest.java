@@ -16,8 +16,8 @@ public class ServicioClienteTest {
 	public void inicializar() {
 		servicio = new ServicioCliente();
 
-		Cliente c1 = new Cliente("0101", "Luis", "Perez","");
-		Cliente c2 = new Cliente("0202", "Maria", "Lopez","");
+		Cliente c1 = new Cliente("0101", "Luis", "Perez",15);
+		Cliente c2 = new Cliente("0202", "Maria", "Lopez",15);
 
 		servicio.crear(c1);
 		servicio.crear(c2);
@@ -49,7 +49,7 @@ public class ServicioClienteTest {
 
 	@Test
 	public void testCrearClienteNuevo() {
-		Cliente nuevo = new Cliente("0303", "Carlos", "Mena","");
+		Cliente nuevo = new Cliente("0303", "Carlos", "Mena",15);
 
 		Cliente resultado = servicio.crear(nuevo);
 
@@ -63,7 +63,7 @@ public class ServicioClienteTest {
 
 	@Test
 	public void testCrearClienteDuplicado() {
-		Cliente duplicado = new Cliente("0101", "Otro", "Nombre","");
+		Cliente duplicado = new Cliente("0101", "Otro", "Nombre",15);
 
 		Cliente resultado = servicio.crear(duplicado);
 
